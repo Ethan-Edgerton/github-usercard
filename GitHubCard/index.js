@@ -3,6 +3,29 @@
            https://api.github.com/users/<your name>
 */
 
+const cardContainer = document.querySelector(`.cards`)
+let userNameArray = [
+  `Ethan-Edgerton`,  
+  `tetondan`,
+  `dustinmyers`,
+  `justsml`,
+  `luishrd`,
+  `bigknell`
+]
+
+userNameArray.forEach(userNames => {
+  axios.get(`https://api.github.com/users/${userNames}`)
+  .then(response => {
+    const newCard = createCard(response)
+    console.log(response)
+    cardContainer.appendChild(newCard)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+})
+
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -23,8 +46,6 @@
           Using that array, iterate over it, requesting data for each user, creating a new card for each
           user, and adding that card to the DOM.
 */
-
-const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -53,3 +74,53 @@ const followersArray = [];
   luishrd
   bigknell
 */
+
+
+function createCard (response) {
+
+  // elements
+  const card = document.createElement(`div`)
+  const image = document.createElement(`img`)
+  const cardInfo = document.createElement(`div`)
+  const header = document.createElement(`h3`)
+  const name = document.createElement(`p`)
+  const userName = document.createElement(`p`)
+  const location = document.createElement(`p`)
+  const profile = document.createElement(`p`)
+  const github = document.createElement(`a`)
+  const followers = document.createElement(`p`)
+  const following = document.createElement(`p`)
+  const bio = document.createElement(`p`)
+
+  // Structure
+  card.appendChild(image)
+  card.appendChild(cardInfo)
+  cardInfo.appendChild(header)
+  cardInfo.appendChild(name)
+  cardInfo.appendChild(userName)
+  cardInfo.appendChild(location)
+  cardInfo.appendChild(profile)
+  cardInfo.appendChild(followers)
+  cardInfo.appendChild(following)
+  cardInfo.appendChild(bio)
+  profile.appendChild(github) // Anchor
+
+  // class attr href
+  card.classList.add(`card`)
+  image.src = response.data.avatar_url;
+  cardInfo.classList.add(`card-info`)
+  header.classList.add(`name`)
+  name.classList.add(`username`)
+  github.href = response.data.html_url
+
+  // Set content
+  header.textContent = response.data.name
+  userName.textContent = response.data.login
+  location.textContent = response.data.location
+  github.textContent = response.data.html_url
+  followers.textContent = response.data.followers
+  following.textContent = response.data.following
+  bio.textContent = response.data.bio
+
+  return card;
+}
